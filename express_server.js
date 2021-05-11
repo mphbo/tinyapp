@@ -1,8 +1,12 @@
 const express = require('express');
-const app = express();
 const PORT = 8080;
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
+const app = express();
 app.set('view engine', 'ejs');
+app.use(cookieParser());
+
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -17,7 +21,6 @@ app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
 
-const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.get('/urls.json', (req, res) => {
@@ -29,23 +32,18 @@ app.get('/hello', (req, res) => {
 });
 
 app.get('/urls', (req, res) => {
-  const templateVars = { urls: urlDatabase };
+  
+  const templateVars = { urls: urlDatabase, username: req.cookies['username'] };
   return res.render('urls_index', templateVars);
 });
 
 app.get('/urls/new', (req, res) => {
-  return res.render('urls_new');
+  return res.render('urls_new', {username: req.cookies['username']});
 });
 
 app.get('/urls/:shortURL', (req, res) => {
-  const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL]};
+  const templateVars = {shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL], username: req.cookies['username']};
   return res.render('urls_show', templateVars);
-});
-
-app.post('/urls/:shortURL/delete', (req, res) => {
-  console.log(urlDatabase[req.params.shortURL])
-  delete urlDatabase[req.params.shortURL];
-  return res.redirect(`/urls`);
 });
 
 app.get('/u/:shortURL', (req, res) => {
@@ -61,6 +59,26 @@ app.post('/urls', (req, res) => {
   return res.redirect(`/urls/${shortURL}`);
 });
 
+app.post('/urls/:shortURL/delete', (req, res) => {
+  console.log(urlDatabase[req.params.shortURL])
+  delete urlDatabase[req.params.shortURL];
+  return res.redirect(`/urls`);
+});
+
+app.post('/urls/:shortURL/update', (req, res) => {
+  urlDatabase[req.params.shortURL] = req.body.update;
+  return res.redirect(`/urls/${req.params.shortURL}`);
+});
+
+app.post('/login', (req, res) => {
+  res.cookie('username', req.body.username);
+  return res.redirect(`/urls`);
+});
+
+app.post('/logout', (req, res) => {
+  res.clearCookie('username');
+  return res.redirect('urls');
+})
 
 const generateRandomString = () => {
   const string = Math.random().toString(16).substr(2, 6);
