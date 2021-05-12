@@ -13,19 +13,20 @@
 
       </div>
     </div>
-          <% if (!username) { %>
-            <form action="/login" method="POST">
-              <input type="text" name="username">
-              <button type="submit" class="btn btn-success">Login</button>
-            </form>
-          <% } 
-          if (username) { %>
-            <h3>Logged In As: <%= username %></h3>
-            <h1>   </h1>
-            <form action="/logout" method="POST">
-              <!-- <button type="submit" class="btn btn-warning">Logout</button> -->
-              <input type="submit" value="logout">
-            </form>
-          <% } %>
+    <% if (!user) { %>
+        <form action="/login" method="GET">
+          <button type="submit" class="btn btn-success">Login</button>
+        </form>
+        <form action="/register" method="GET">
+          <button type="submit" class="btn btn-success">Register</button>
+        </form>
+      <% } 
+      if (user) { %>
+      
+        <form action="/logout" method="POST">
+        <label>Logged In As: <%= user.email %></label>
+         <button type="submit" class="btn btn-outline-dark">Logout</button>
+        </form>
+      <% } %>
   </nav>
 </header>
