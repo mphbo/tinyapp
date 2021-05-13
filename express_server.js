@@ -2,6 +2,8 @@ const express = require('express');
 const PORT = 8080;
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcrypt');
+
 
 const app = express();
 app.set('view engine', 'ejs');
@@ -158,7 +160,7 @@ app.post('/login', (req, res) => {
 
   const id = returnUserWithEmail(req.body.email, users);
 
-  if (req.body.password !== users[id].password) {
+  if (!bcrypt.compareSync(req.body.password, users[id].password)) {
     return res.status(403).end();
   }
 
@@ -178,10 +180,12 @@ app.post('/register', (req, res) => {
     return res.status(400).end();
   }
   
+  const password = bcrypt.hashSync(req.body.password, 10);
+  
   users[id] = {
     id: id,
     email: req.body.email,
-    password: req.body.password
+    password: password
   };
   res.cookie('user_id', users[id].id);
   // console.log(req.cookies['user_id']);
