@@ -1,6 +1,12 @@
 # TinyAPP project
 #### A full stack web app that creates short URLs and uses them to redirect to the original long and bulky ones. It was created with Node and Express 
 
+## Final Product
+https://raw.githubusercontent.com/mphbo/tinyapp/master/docs/urls.png
+https://raw.githubusercontent.com/mphbo/tinyapp/master/docs/show.png
+https://raw.githubusercontent.com/mphbo/tinyapp/master/docs/login.png
+
+
 ## This app was created with a main functional points in mind
 * The user can register/login/logout and store urls
 * The user can then update/delete those urls
