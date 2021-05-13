@@ -38,7 +38,7 @@ const users = {
     email: 'temp@example.com',
     password: 'tempPassword'
   },
-}
+};
 
 app.get("/", (req, res) => {
   return res.send("Hello!");
@@ -69,12 +69,12 @@ app.get('/urls/new', (req, res) => {
     return res.redirect('/login');
   }
   const templateVars = { urls: urlDatabase, user: users[req.session.user_id] };
-  return res.render('urls_new', templateVars)
+  return res.render('urls_new', templateVars);
 });
 
-app.get('/urls/:shortURL', (req, res) => {  
+app.get('/urls/:shortURL', (req, res) => {
   
-  let templateVars = { doesNotExist: true, user: users[req.session.user_id], ownsURL: true }
+  let templateVars = { doesNotExist: true, user: users[req.session.user_id], ownsURL: true };
   
   if (Object.keys(urlDatabase).includes(req.params.shortURL)) {
     templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.session.user_id], visitors: urlDatabase[req.params.shortURL].visitors, date: urlDatabase[req.params.shortURL].date, uniqueVisitors: urlDatabase[req.params.shortURL].uniqueVisitors.length, doesNotExist: false, ownsURL: true };
@@ -109,13 +109,13 @@ app.get('/u/:shortURL', (req, res) => {
 app.get('/does_not_exist', (req, res) => {
   const templateVars = {
     user: users[req.session.user_id]
-  }
-  return res.render('does_not_exist', templateVars)
-})
+  };
+  return res.render('does_not_exist', templateVars);
+});
 
 app.get('/login', (req, res) => {
   const templateVars = { user: users[req.session.user_id] };
-  return res.render('login', templateVars)
+  return res.render('login', templateVars);
 });
 
 app.get('/doesnotexist', (req, res) => {
@@ -123,21 +123,21 @@ app.get('/doesnotexist', (req, res) => {
 });
 
 app.get('/user_exists', (req, res) => {
-  templateVars = {user: users[req.session.user_id]};
+  const templateVars = {user: users[req.session.user_id]};
   return res.render('user_exists', templateVars);
 });
 
 app.get('/login_failed', (req, res) => {
-  templateVars = {user: users[req.session.user_id]};
+  const templateVars = {user: users[req.session.user_id]};
   return res.render('login_failed', templateVars);
-})
+});
 
 
 
 
 //All post requests
 app.post('/urls', (req, res) => {
-  const date = new Date()
+  const date = new Date();
   const readableDate = date.toDateString();
   const longURL = req.body.longURL;
   const shortURL = generateRandomString();
@@ -156,7 +156,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
     return res.redirect('/urls');
   }
   if (urlDatabase[req.params.shortURL].userID !== req.session.user_id) {
-    return res.redirect(`/urls/${req.params.shortURL}`)
+    return res.redirect(`/urls/${req.params.shortURL}`);
   }
   // console.log(urlDatabase[req.params.shortURL])
   delete urlDatabase[req.params.shortURL];
@@ -165,7 +165,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
 
 app.post('/urls/:shortURL/update', (req, res) => {
   if (urlDatabase[req.params.shortURL].userID !== req.session.user_id) {
-    return res.redirect(`/urls/${req.params.shortURL}`)
+    return res.redirect(`/urls/${req.params.shortURL}`);
   }
   urlDatabase[req.params.shortURL].longURL = req.body.update;
   return res.redirect(`/urls/`);
@@ -195,7 +195,7 @@ app.post('/register', (req, res) => {
   const id = generateRandomString();
 
   if (!req.body.email || !req.body.password) {
-    return res.redirect('/register')
+    return res.redirect('/register');
   }
 
   if (checkForEmail(req.body.email, users)) {
