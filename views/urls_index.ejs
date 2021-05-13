@@ -8,11 +8,24 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
   <title>TinyApp</title>
 </head>
+
+<!-- the count variable is used to check whether there are currently any tinyURLs created. Different content will be displayed accordingly -->
+<!-- If user is not logged in only a warning will be shown, none of the other content -->
+
 <body>
   <%- include('partials/_header') %>
   <%  
-  let count = 0;
-  if (user) {
+  const checkForURL = (id) => {
+    let count = 0;
+    for (let url in urls) {
+      if (id === urls[url].userID) {
+        count += 1;
+      }
+    }
+    return count;
+  }
+
+  if (user && checkForURL(user.id) > 0) {
     %>
   <main style="margin: 1em;">
     <h3>My URLs</h3>
@@ -20,6 +33,9 @@
       <thead>
         <tr>
           <th scope="col">Short URL</th>
+          <th scope="col">Date Created</th>
+          <th scope="col">Visitors</th>
+          <th scope="col">Unique Visitors</th>
           <th scope="col">Long URL</th>
         </tr>
       </thead>
@@ -28,10 +44,22 @@
         const urlsForUser = id => {
           for(let url in urls) { 
             if (id === urls[url].userID) {
-              count += 1;
             %>
           <tr>
-            <td><%= url %></td>
+            <td><a href="/u/<%= url %>"><%= url %></a></td>
+            <td><%= urls[url].date %></td>
+            <td><%= urls[url].visitors %></td>
+            <% if (urls[url].uniqueVisitors.length === 0) {
+            %>
+            <td>0</td>
+            <%
+            }
+            if (urls[url].uniqueVisitors.length > 0) {
+            %>
+            <td><%= urls[url].uniqueVisitors.length %></td>
+            <% 
+            } 
+            %>
             <td><%= urls[url].longURL %></td>
             <td>
                 <form action="/urls/<%= url %>" method="GET">
@@ -50,50 +78,50 @@
         }
         urlsForUser(user.id);
       }
-        if (count === 0 && user) {
-        %>
-         <h3>Create New URL!</h3>
-         <form action="/urls/new" method="GET">
-          <button type="submit" class="btn btn-primary">
-            Create
-          </button>
-         </form>
-        <%
-        }
         if (!user) {
         %>
-          <h3>Please Login</h3>
-          <form action="login" method="GET">
-            <button class="btn btn-primary" type="submit">Login</button>
-          </form>  
-          <h3>Or Create an Account</h3>
-          <form action="register" method="GET">
-            <button class="btn btn-primary" type="submit">Register</button>
-          </form>  
-
+        <div class="card text-center">
+          <div class="card-header"></div>
+            <div class="card-body">
+              <h5 class="card-title">You are not logged in!</h5>
+              <p class="card-text"></a></p>
+              <form action="/login" method="GET">
+                <button type="submit" class="btn btn-primary">Login</button>
+              </form>
+              <p class="card-text"></p>
+              <h5></h5>
+              <h5></h5>
+            </div>
+          <div class="card-footer text-muted"></div>
+        </div>
       </tbody>
     </table>
-  </main>
-          <%
+            <%
+        }
+         if (user && checkForURL(user.id) === 0) {
+        %>
+        <div class="card text-center">
+          <div class="card-header"></div>
+            <div class="card-body">
+              <h5 class="card-title">You don't have any TinyURLs!</h5>
+              <p class="card-text"></a></p>
+              <form action="/urls/new" method="GET">
+                <button type="submit" class="btn btn-primary">Start Creating</button>
+              </form>
+              <p class="card-text"></p>
+              <h5></h5>
+              <h5></h5>
+            </div>
+          <div class="card-footer text-muted"></div>
+        </div>
+        <%
         }
         %>
-  
+  </main>
+
   <!-- Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://stack">
-  <title>Document</title>
-</head>
-<body>
-  
 </body>
 </html>
