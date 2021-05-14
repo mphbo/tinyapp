@@ -1,5 +1,5 @@
 # TinyAPP project
-#### A full stack web app that creates short URLs and uses them to redirect to the original long and bulky ones. It was created with Node and Express 
+#### A full stack web app that creates short URLs and uses them to redirect to the original long and bulky ones. It was created with Node and Express.
 
 ## Final Product
 
