@@ -4,7 +4,7 @@
 ## Final Product
 
 !["Screenshot of URLs page"](https://raw.githubusercontent.com/mphbo/tinyapp/master/docs/urls.png)
-!["Screenshot of register page"](https://raw.githubusercontent.com/mphbo/tinyapp/master/docs/show.pnghttps://raw.githubusercontent.com/mphbo/tinyapp/master/docs/show.png)
+!["Screenshot of register page"](https://raw.githubusercontent.com/mphbo/tinyapp/master/docs/show.png)
 
 !["Screenshot of register page"](https://raw.githubusercontent.com/mphbo/tinyapp/master/docs/login.png)
 
