@@ -17,14 +17,14 @@
 * A tally is kept of each time others visit each url as well as a timestamp of every visit from a different user
 
 ## Dependencies
--Node.js
--Express
--EJS
--bcrypt
--body-parser
--cookie-session
--method-override
+* Node.js
+* Express
+* EJS
+* bcrypt
+* body-parser
+* cookie-session
+* method-override
 
 ## Getting Started
--Install all dependencies (using the `npm install` command).
--Run the development web server using the `node express_server.js` command.
+* Install all dependencies (using the `npm install` command).
+* Run the development web server using the `node express_server.js` command.
