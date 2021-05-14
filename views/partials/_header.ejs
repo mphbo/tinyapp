@@ -13,7 +13,7 @@
       </div>
     </div>
     <% if (!user) { %>
-        <form action="/login" method="GET">
+        <form action="/login?_method=PUT" method="GET">
           <button type="submit" class="btn btn-success">Login</button>
         </form>
         <form action="/register" method="GET">
@@ -22,7 +22,7 @@
       <% } 
       if (user) { %>
       
-        <form action="/logout" method="POST">
+        <form action="/logout?_method=PUT" method="POST">
         <label>Logged In As: <%= user.email %></label>
          <button type="submit" class="btn btn-outline-dark">Logout</button>
         </form>

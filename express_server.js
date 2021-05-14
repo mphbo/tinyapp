@@ -3,9 +3,8 @@ const PORT = 8080;
 const bodyParser = require('body-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcrypt');
-const { generateRandomString, checkForEmail, returnUserWithEmail } = require('./helperFunction');
-
-
+const methodOverride = require('method-override');
+const { generateRandomString, checkForEmail, returnUserWithEmail, checkIfNewVisitor } = require('./helperFunction');
 
 
 //setup app/server, set cookie parser, listen and start bodyParser
@@ -21,15 +20,35 @@ app.listen(PORT, () => {
 app.use(bodyParser.urlencoded({extended: true}));
 
 
+//enable method override
+app.use(methodOverride('_method'));
 
 
 
+//helper function to check if a visitor is indeed unique, used below in app.get('/u/shortURL'.....)
 
 
-//Global Objects
+//Global Objects mostly for reference not be taken literally
+  
+const readableDate = () => {
+  const date = new Date();    const aReadableDate = date.toDateString();
+  return aReadableDate;
+};
+
 const urlDatabase = {
-  "b2xVn2": {uniqueVisits: ['f89ff3'], date: 000, visitors: 0, longURL: "http://www.lighthouselabs.ca", userID: 'asdfas' },
-  "9sm5xK": {date: 000, visitors: 0, longURL: "http://www.google.com", userID: 'ifakej' }
+  "b2xVn2": {
+    uniqueVisits: {'f89ff3': readableDate()},
+    date: 0,
+    visitors: 0,
+    longURL: "http://www.lighthouselabs.ca",
+    userID: 'asdfas'
+  },
+  "9sm5xK": {
+    date: 0,
+    visitors: 0,
+    longURL: "http://www.google.com",
+    userID: 'ifakej'
+  }
 };
 
 const users = {
@@ -77,7 +96,7 @@ app.get('/urls/:shortURL', (req, res) => {
   let templateVars = { doesNotExist: true, user: users[req.session.user_id], ownsURL: true };
   
   if (Object.keys(urlDatabase).includes(req.params.shortURL)) {
-    templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.session.user_id], visitors: urlDatabase[req.params.shortURL].visitors, date: urlDatabase[req.params.shortURL].date, uniqueVisitors: urlDatabase[req.params.shortURL].uniqueVisitors.length, doesNotExist: false, ownsURL: true };
+    templateVars = { shortURL: req.params.shortURL, longURL: urlDatabase[req.params.shortURL].longURL, user: users[req.session.user_id], visitors: urlDatabase[req.params.shortURL].visitors, date: urlDatabase[req.params.shortURL].date, uniqueVisitors: urlDatabase[req.params.shortURL].uniqueVisitors, doesNotExist: false, ownsURL: true };
   }
 
   if (req.session.user_id !== urlDatabase[req.params.shortURL].userID) {
@@ -100,8 +119,8 @@ app.get('/u/:shortURL', (req, res) => {
   
   const longURL = urlDatabase[req.params.shortURL].longURL;
   urlDatabase[req.params.shortURL].visitors += 1;
-  if (!urlDatabase[req.params.shortURL].uniqueVisitors.includes(req.session.user_id)) {
-    urlDatabase[req.params.shortURL].uniqueVisitors.push(req.session.user_id);
+  if (checkIfNewVisitor(urlDatabase, req.params.shortURL, req.session.user_id)) {
+    urlDatabase[req.params.shortURL].uniqueVisitors.push({id: req.session.user_id, date: readableDate()});
   }
   return res.redirect(longURL);
 });
@@ -137,21 +156,21 @@ app.get('/login_failed', (req, res) => {
 
 //All post requests
 app.post('/urls', (req, res) => {
-  const date = new Date();
-  const readableDate = date.toDateString();
+  // const date = new Date();
+  // const readableDate = date.toDateString();
   const longURL = req.body.longURL;
   const shortURL = generateRandomString();
   urlDatabase[shortURL] = {
     longURL,
     userID: req.session.user_id,
     visitors: 0,
-    date: readableDate,
+    date: readableDate(),
     uniqueVisitors: []
   };
   return res.redirect(`/urls/${shortURL}`);
 });
 
-app.post('/urls/:shortURL/delete', (req, res) => {
+app.delete('/urls/:shortURL/delete', (req, res) => {
   if (!req.session.user_id) {
     return res.redirect('/urls');
   }
@@ -163,7 +182,7 @@ app.post('/urls/:shortURL/delete', (req, res) => {
   return res.redirect(`/urls`);
 });
 
-app.post('/urls/:shortURL/update', (req, res) => {
+app.put('/urls/:shortURL/update', (req, res) => {
   if (urlDatabase[req.params.shortURL].userID !== req.session.user_id) {
     return res.redirect(`/urls/${req.params.shortURL}`);
   }
@@ -171,12 +190,12 @@ app.post('/urls/:shortURL/update', (req, res) => {
   return res.redirect(`/urls/`);
 });
 
-app.post('/logout', (req, res) => {
+app.put('/logout', (req, res) => {
   req.session = null;
   return res.redirect('/urls');
 });
 
-app.post('/login', (req, res) => {
+app.put('/login', (req, res) => {
   if (!checkForEmail(req.body.email, users)) {
     return res.redirect('/login_failed');
   }

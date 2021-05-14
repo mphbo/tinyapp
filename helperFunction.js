@@ -23,14 +23,16 @@ const returnUserWithEmail = (email, object) => {
   return undefined;
 };
 
+//helper function to check if a visitor is indeed unique, used below in app.get('/u/shortURL'.....)
 
-const returnUserFromEmail = (email, object) => {
-  for (let user in object) {
-    if (object[user].email === email) {
-      return user;
+
+const checkIfNewVisitor = (object, param, id) => {
+  for (const visitor of object[param].uniqueVisitors) {
+    if (visitor.id === id) {
+      return false;
     }
   }
-  return false;
+  return true;
 };
 
-module.exports = { generateRandomString, checkForEmail, returnUserWithEmail};
+module.exports = { generateRandomString, checkForEmail, returnUserWithEmail, checkIfNewVisitor };

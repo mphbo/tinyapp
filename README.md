@@ -14,7 +14,7 @@
 ## This app was created with a main functional points in mind
 * The user can register/login/logout and store urls
 * The user can then update/delete those urls
-* A tally is kept of each time others visit each url
+* A tally is kept of each time others visit each url as well as a timestamp of every visit from a different user
 
 ## Dependencies
 -Node.js
@@ -23,6 +23,7 @@
 -bcrypt
 -body-parser
 -cookie-session
+-method-override
 
 ## Getting Started
 -Install all dependencies (using the `npm install` command).

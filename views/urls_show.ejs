@@ -20,13 +20,25 @@
         <div class="card-body">
           <h5 class="card-title">TinyURL for: <%= longURL %></h5>
           <p class="card-text">Short URL: <a href="/u/<%= shortURL %>"><%= shortURL %></a></p>
-          <form action="/urls/<%= shortURL %>/update" method="POST">
+          <form action="/urls/<%= shortURL %>/update?_method=PUT" method="POST">
             <input type="text" name="update" placeholder="Change URL"> 
             <button type="submit" class="btn btn-primary">Update</button>
           </form>
           <p class="card-text">Date Created: <%= date %></p>
           <h5>Visitors: <%= visitors %></h5>
-          <h5>Unique Visitors: <%= uniqueVisitors %></h5>
+          <h5>Unique Visitors: <%= uniqueVisitors.length %></h5>
+          <%
+          if (uniqueVisitors.length > 0) {
+            %>
+          <h5>Visits:</h5>
+          <%
+          for (let visitor in uniqueVisitors) {
+          %>
+            <h6><%= uniqueVisitors[visitor].id %>: <%= uniqueVisitors[visitor].date %></h6>
+          <%
+          }
+        }
+          %>
         </div>
       <div class="card-footer text-muted"></div>
     </div>
